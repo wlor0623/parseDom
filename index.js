@@ -6,6 +6,9 @@ const domParse = (function () {
   // 获取属性
   domParse.prototype.attr = function (name) {
     if (this.elements.length > 0) {
+      if (name === 'src') {
+        return this.elements[0].getAttribute('temp-src');  // 获取temp-src而非src
+      }
       return this.elements[0].getAttribute(name);
     }
     return null;
@@ -38,6 +41,7 @@ const domParse = (function () {
     }
     return new domParse([]);
   };
+
   domParse.prototype.find = function (selector) {
     let foundElements = [];
     this.elements.forEach(element => {
@@ -46,6 +50,7 @@ const domParse = (function () {
     });
     return new domParse(foundElements);
   };
+
   domParse.prototype.children = function (selector) {
     let childrenElements = [];
     this.elements.forEach(element => {
@@ -59,6 +64,7 @@ const domParse = (function () {
     });
     return new domParse(childrenElements);
   };
+
   domParse.prototype.parent = function () {
     const parentElements = [];
     this.elements.forEach(element => {
@@ -69,29 +75,29 @@ const domParse = (function () {
     });
     return new domParse(parentElements);
   };
+
   domParse.prototype.hasClass = function (className) {
     return this.elements.some(element => element.classList.contains(className));
   };
+
   function load(html) {
-    // 创建一个 <noscript> 元素
-    const tempNoScript = document.createElement('noscript');
-    // 设置 <noscript> 的内容为 HTML 字符串
-    tempNoScript.innerHTML = html;
-
-    // 注意：<noscript> 元素在 DOM 中的内容不会被解析为真正的 DOM 元素，
-    // 所以我们需要将内容提取出来进行后续处理。
-    // 这里可以新建一个容器，将 <noscript> 内的 HTML 提取出来。
     const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = tempNoScript.innerHTML;
+    tempDiv.innerHTML = html;
 
-    // 返回一个包装好的函数，用于查询 DOM 节点
+    // 替换所有的src属性为temp-src
+    const imgTags = tempDiv.querySelectorAll('[src]');
+    imgTags.forEach(img => {
+      const src = img.getAttribute('src');
+      img.setAttribute('temp-src', src);  // 设置temp-src
+      img.removeAttribute('src');  // 移除src属性
+    });
+
     const find = function (selector) {
       const elements = tempDiv.querySelectorAll(selector);
-      return new parsedom(Array.from(elements));
+      return new domParse(Array.from(elements));
     };
     return find;
   }
-
 
   return {
     load: load
