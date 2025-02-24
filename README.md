@@ -4,7 +4,7 @@
 ## 使用方法
 ```
 <script>
-    const $ = parsedom.load(`<p id="koko"><img src="tieba" /> <o>123</o><span data-src="baidu">你好</span> <span >helo</span><p>`);
+    const $ = domParse.load(`<p id="koko"><img src="tieba" /> <o>123</o><span data-src="baidu">你好</span> <span >helo</span><p>`);
 
     // 获取属性
     const id = $('p').find('span').parent().attr('id');
