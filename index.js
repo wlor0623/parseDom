@@ -1,10 +1,10 @@
-const domParse = (function () {
-      function domParse(elements) {
+const parsedom = (function () {
+      function parsedom(elements) {
         this.elements = elements;
       }
 
       // 获取属性
-      domParse.prototype.attr = function (name) {
+      parsedom.prototype.attr = function (name) {
         if (this.elements.length > 0) {
           return this.elements[0].getAttribute(name);
         }
@@ -12,7 +12,7 @@ const domParse = (function () {
       };
 
       // 获取文本内容
-      domParse.prototype.text = function () {
+      parsedom.prototype.text = function () {
         let text = '';
         this.elements.forEach(element => {
           text += element.textContent;
@@ -21,7 +21,7 @@ const domParse = (function () {
       };
 
       // 获取表单元素的值
-      domParse.prototype.val = function () {
+      parsedom.prototype.val = function () {
         if (this.elements.length > 0) {
           return this.elements[0].value;
         }
@@ -29,24 +29,24 @@ const domParse = (function () {
       };
 
       // 添加 eq 方法
-      domParse.prototype.eq = function (i) {
+      parsedom.prototype.eq = function (i) {
         if (i < 0) {
           i = this.elements.length + i;
         }
         if (i >= 0 && i < this.elements.length) {
-          return new domParse([this.elements[i]]);
+          return new parsedom([this.elements[i]]);
         }
-        return new domParse([]);
+        return new parsedom([]);
       };
-      domParse.prototype.find = function (selector) {
+      parsedom.prototype.find = function (selector) {
         let foundElements = [];
         this.elements.forEach(element => {
           const elements = element.querySelectorAll(selector);
           foundElements = foundElements.concat(Array.from(elements));
         });
-        return new domParse(foundElements);
+        return new parsedom(foundElements);
       };
-      domParse.prototype.children = function (selector) {
+      parsedom.prototype.children = function (selector) {
         let childrenElements = [];
         this.elements.forEach(element => {
           const children = Array.from(element.children);
@@ -57,9 +57,9 @@ const domParse = (function () {
             childrenElements = childrenElements.concat(children);
           }
         });
-        return new domParse(childrenElements);
+        return new parsedom(childrenElements);
       };
-      domParse.prototype.parent = function () {
+      parsedom.prototype.parent = function () {
         const parentElements = [];
         this.elements.forEach(element => {
           const parent = element.parentNode;
@@ -67,9 +67,9 @@ const domParse = (function () {
             parentElements.push(parent);
           }
         });
-        return new domParse(parentElements);
+        return new parsedom(parentElements);
       };
-      domParse.prototype.hasClass = function (className) {
+      parsedom.prototype.hasClass = function (className) {
         return this.elements.some(element => element.classList.contains(className));
       };
       function load(html) {
@@ -77,7 +77,7 @@ const domParse = (function () {
         tempDiv.innerHTML = html;
         const find = function (selector) {
           const elements = tempDiv.querySelectorAll(selector);
-          return new domParse(Array.from(elements));
+          return new parsedom(Array.from(elements));
         };
         return find;
       }
