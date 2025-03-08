@@ -80,6 +80,19 @@ const domParse = (function () {
     return this.elements.some(element => element.classList.contains(className));
   };
 
+  // 添加 each 方法
+  /**
+   * 遍历 domParse 实例中的所有元素，并为每个元素执行回调函数
+   * @param {Function} callback - 回调函数，接收当前元素和索引作为参数
+   * @returns {domParse} 返回当前 domParse 实例，以便链式调用
+   */
+  domParse.prototype.each = function (callback) {
+    this.elements.forEach((element, index) => {
+      callback.call(element, index, element);
+    });
+    return this;
+  };
+
   function load(html) {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = html;
